@@ -1,0 +1,32 @@
+* {
+    box-sizing: border-box;
+  }
+  
+  body {
+    background-color: #3a3a3a;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 1vw;
+    margin: 0;
+  }
+  
+  canvas {
+    background-color: #005d8f;
+    display: inline-block;
+    border-radius: 5px;
+
+    margin: 1vw;
+  }
+  
+  h1 {
+    font-size: 45px;
+    color: white;
+    position: relative;
+      
+}
+
+.menu {
+    width: 55%;
+}
