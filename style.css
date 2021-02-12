@@ -1,5 +1,5 @@
 * {
-    box-sizing: border-box;   /* background-color: #7af13f;*/
+    box-sizing: border-box;   /* background-color: #4b3402;*/
   }
   
   body {
@@ -12,14 +12,24 @@
     margin: 0;
   }
   
-  canvas {
+  #canvas {
     background-color: #4f4e4e;
     display: inline-block;
     border-radius: 5px;
-    margin: 1vw;
-    margin-top: 5vh;
+    margin-left: 1vw;
+    margin-top: -1vw;
+    margin-bottom: -1vw;
   }
   
+    
+ #canvasText {
+    background-color: #000000;
+    display: inline-block;
+    border-radius: 5px;
+    margin-left: 5vw;
+    margin-top: 5vh;
+  }
+
   h1 {
     font-size: 45px;
     color: white;

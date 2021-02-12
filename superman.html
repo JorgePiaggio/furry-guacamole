@@ -4,26 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">    
+    <style>
+        body {
+          background-image: url('woods.jpg');
+          background-repeat: no-repeat;
+          background-attachment: scroll;
+          background-size: cover;
+        }
+    </style> 
     <title>Document</title>
 </head>
+
 <body>
+    <canvas id="canvas" width="200" height="650"></canvas>
+    <canvas id="canvasText" width="400" height="130"></canvas>
 
-    <canvas id="canvas" width="200" height="600"></canvas>
-    <canvas id="canvasText" width="300" height="300"></canvas>
-
-    <div class="car"></div>
-    <div class="menu">
-    <h1>WTF</h1>
-    </div>
     <div style="display:none;">
         <img id="car" src="car.png">
         <img id="rival" src="rival.png">
         <img id="hole" src="hole.png">
         <img id="people" src="fsa.png">
-      </div>
-      
+        <img id="tito" src="tito.png">
+        <img id="tito2" src="tito2.png">
+    </div>
+    
 
     <script src="script.js"></script>
-
 </body>
 </html>
