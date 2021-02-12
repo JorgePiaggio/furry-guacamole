@@ -1,9 +1,9 @@
 * {
-    box-sizing: border-box;    /*background-color: #452307;*/
+    box-sizing: border-box;   /* background-color: #7af13f;*/
   }
   
   body {
-    background-color: #368066;
+    background-color: #1a2763;
     display: flex;
     flex-direction: row;
     align-items: flex-start;
