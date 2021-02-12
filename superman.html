@@ -6,9 +6,9 @@
     <link rel="stylesheet" href="style.css">    
     <style>
         body {
-          background-image: url('woods.jpg');
+          background-image: url('back.jpg');
           background-repeat: no-repeat;
-          background-attachment: scroll;
+          background-attachment: fixed;
           background-size: cover;
         }
     </style> 
@@ -17,8 +17,11 @@
 
 <body>
     <canvas id="canvas" width="200" height="650"></canvas>
-    <canvas id="canvasText" width="400" height="130"></canvas>
-
+    <div class="menu">
+    <canvas id="canvasText" width="300" height="230"></canvas>
+        <button onclick="play()" type="button">Play</button>
+        <button onclick="pause()" type="button">Pause</button>
+    </div>    
     <div style="display:none;">
         <img id="car" src="car.png">
         <img id="rival" src="rival.png">
@@ -26,9 +29,23 @@
         <img id="people" src="fsa.png">
         <img id="tito" src="tito.png">
         <img id="tito2" src="tito2.png">
+        <img id="boom" src="explosion.png">
     </div>
-    
 
+    <audio id="music">
+        <source src="FirstItGiveth.mp3" type="audio/mpeg">
+     </audio>
+     
+     
+     <script>
+     var myMusic= document.getElementById("music");
+     function play() {
+     myMusic.play();
+     }
+     function pause() {
+     myMusic.pause();
+     }
+     </script>
     <script src="script.js"></script>
 </body>
 </html>

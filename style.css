@@ -1,5 +1,5 @@
 * {
-    box-sizing: border-box;   /* background-color: #4b3402;*/
+    box-sizing: border-box;   /* background-color: #ab5f03;*/
   }
   
   body {
@@ -23,10 +23,10 @@
   
     
  #canvasText {
-    background-color: #000000;
+    background-color: rgba(0, 0, 0, 0.5);
     display: inline-block;
     border-radius: 5px;
-    margin-left: 5vw;
+    margin-left: 50vw;
     margin-top: 5vh;
   }
 
@@ -36,7 +36,12 @@
     position: relative;
       
 }
+.menu{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 
-.menu {
-    width: 55%;
+}
+button {
+  margin-top: 10px;
 }

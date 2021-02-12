@@ -7,12 +7,15 @@ const holeImg = document.getElementById('hole');
 const peopleImg = document.getElementById('people');
 const titoImg = document.getElementById('tito');
 const titoImg2 = document.getElementById('tito2');
+const boomImg = document.getElementById('boom');
 const ctx = canvas.getContext('2d');
 const ctxT = canvasText.getContext('2d');
+var myMusic= document.getElementById("music");
+
 let score = 0;
 let maxScore = 0;
 let dead = false;
-
+let iter = 0;
 
 
 /**************************************************************************************************************************/
@@ -49,83 +52,64 @@ function moveCar(){
         car.y = canvas.height - car.h;
     }
 
+    var xAxis = car.x; yAxis = car.y;
+
         /* rival collision */ 
     if( (car.x > rival.x && (car.x < rival.x + rival.w)) || (car.x + car.w > rival.x && (car.x + car.w < rival.x + rival.w)) ){
-        if(car.y > rival.y && car.y < rival.y + rival.h){
-            confirm(`Loser! \n\nScore: ${score}`);
-            hole.x = Math.random() * (canvas.width - hole.w);
-            hole.y = ( (Math.random() * 2500) + 1) * (-1);
-            people.x = Math.random() * (canvas.width - people.w);
-            people.y = ( (Math.random() * 2500) + 1) * (-1);
-            rival.x = Math.random() * (canvas.width - car.w);
-            rival.y = ( (Math.random() * 500) + 1) * (-1);
-            car.y = canvas.height - 70;
-            tito.x= Math.random() * (canvas.width - 40);
-            tito.y= ( (Math.random() * 500) + 1) * (-1);
-            if(score > maxScore)
-                maxScore = score;
-            score = 0;
-
+        if( (car.y > rival.y && car.y < rival.y + rival.h) || (car.y + car.h > rival.y && car.y + car.h < rival.y + rival.h) ){
+            ctx.drawImage(boomImg, xAxis - 40, yAxis - 40, 100, 100);    
+            confirm(`You suck!! \n\nScore: ${score}`);
+            restore();
         }
-
-
-        
     }
         /* hole collision */ 
-    if( (car.x > hole.x && (car.x < hole.x + hole.w - 10)) || (car.x + car.w > hole.x && (car.x + car.w < hole.x + hole.w - 10)) ){
-        if(car.y > hole.y && car.y < hole.y + hole.h){
+    if( (car.x > hole.x + 5 && (car.x < hole.x + hole.w - 10)) || (car.x + car.w > hole.x + 5 && (car.x + car.w < hole.x + hole.w - 10)) ){
+        if( (car.y > hole.y && car.y < hole.y + hole.h) || (car.y + car.h > hole.y && car.y + car.h < hole.y + hole.h) ){
+            ctx.drawImage(boomImg, xAxis - 40, yAxis - 40, 100, 100);    
             confirm(`Game Over Perra!\n\nScore: ${score}`);
-            hole.x = Math.random() * (canvas.width - hole.w);
-            hole.y = ( (Math.random() * 2500) + 1) * (-1);
-            people.x = Math.random() * (canvas.width - people.w);
-            people.y = ( (Math.random() * 2500) + 1) * (-1);
-            rival.x = Math.random() * (canvas.width - car.w);
-            rival.y = ( (Math.random() * 500) + 1) * (-1);
-            car.y = canvas.height - 70;
-            tito.x= Math.random() * (canvas.width - 40);
-            tito.y= ( (Math.random() * 500) + 1) * (-1);
-            if(score > maxScore)
-                maxScore = score;
-            score = 0;
+            restore();
         }
     }
-
         /* people collision */ 
     if( (car.x > people.x && (car.x < people.x + people.w - 10)) || (car.x + car.w > people.x && (car.x + car.w < people.x + people.w - 10)) ){
-        if(car.y > people.y && car.y < people.y + people.h){
-            confirm(`So sorry!\n\nScore: ${score}`);
-            hole.x = Math.random() * (canvas.width - hole.w);
-            hole.y = ( (Math.random() * 2500) + 1) * (-1);
-            people.x = Math.random() * (canvas.width - people.w);
-            people.y = ( (Math.random() * 2500) + 1) * (-1);
-            rival.x = Math.random() * (canvas.width - car.w);
-            rival.y = ( (Math.random() * 500) + 1) * (-1);
-            car.y = canvas.height - 70;
-            tito.x= Math.random() * (canvas.width - 40);
-            tito.y= ( (Math.random() * 500) + 1) * (-1);
-            if(score > maxScore)
-                maxScore = score;
-            score = 0;
+        if( (car.y > people.y && car.y < people.y + people.h) || (car.y + car.h > people.y && car.y + car.h < people.y + people.h) ){
+            ctx.drawImage(boomImg, xAxis - 40, yAxis - 40, 100, 100);    
+            confirm(`Better Kill Diego!\n\nScore: ${score}`);
+            restore();
         }
     }
-
           /* tito collision */ 
-        if( (car.x > tito.x && (car.x < tito.x + tito.w)) || (car.x + car.w > tito.x && (car.x + car.w < tito.x + tito.w)) ){
-            if(car.y > tito.y && car.y < tito.y + tito.h){                
-                dead = true;
-                score += 100;
-                tito.y += car.h;
-            }
+    if( (car.x > tito.x && (car.x < tito.x + tito.w)) || (car.x + car.w > tito.x && (car.x + car.w < tito.x + tito.w)) ){
+        if( (car.y > tito.y && car.y < tito.y + tito.h) || (car.y + car.h > tito.y && car.y + car.h < tito.y + tito.h) ){                
+            dead = true;
+            score += 100;
+            tito.y += car.h;
         }
+    }
 }
 
+/* objects back to start position, score restore */
+function restore(){
+    hole.x = Math.random() * (canvas.width - hole.w);
+    hole.y = ( (Math.random() * 2500) + 1) * (-1);
+    people.x = Math.random() * (canvas.width - people.w);
+    people.y = ( (Math.random() * 2500) + 1) * (-1);
+    rival.x = Math.random() * (canvas.width - car.w - 10) + 10;
+    rival.y = ( (Math.random() * 500) + 1) * (-1);
+    car.y = canvas.height - 70;
+    tito.x = Math.random() * (canvas.width - 40) -10 ;
+    tito.y= ( (Math.random() * 500) + 1) * (-1);
+    if(score > maxScore)
+        maxScore = score;
+    score = 0;
+}
 
 /**************************************************************************************************************************/
 /* obstacles */
 
-    /* rival car */
+/* rival car */
 const rival = {
-    x: Math.random() * (canvas.width-60),
+    x: Math.random() * (canvas.width),
     y: 0,
     w: 38,
     h: 70,
@@ -140,12 +124,17 @@ function moveRival(){
     rival.y += rival.dy;
     rival.x += (Math.random() * 20) - 10;
 
+    /* border check */
     if(rival.x + rival.w > canvas.width)
         rival.x = canvas.width - rival.w;
     else if(rival.x < 0)
         rival.x = 0;
+    
+    /* collision check */
+    if((rival.y > people.y-5 && rival.y < people.y+people.h) || (people.y > rival.y-5 && people.y < rival.y+rival.h))
+        people.dy = rival.dy;
 
-
+    /*restore*/
     if(rival.y > canvas.height){
         rival.y = -30;
         rival.x = Math.random() * (canvas.width - car.w);
@@ -156,7 +145,7 @@ function moveRival(){
 }
 
 
-    /* hole */
+/* hole */
 const hole = {
     x: Math.random() * (canvas.width - 40),
     y: -3000 * (Math.random() * 5) + 1,
@@ -180,7 +169,7 @@ function moveHole(){
 }
 
 
-    /* people */
+/* people */
 const people = {
     x: Math.random() * (canvas.width - 40),
     y: -500,
@@ -204,13 +193,13 @@ function movePeople(){
 }
 
 
-    /* tito */
+/* tito */
 const tito = {
     x: Math.random() * (canvas.width - 35) + 5,
     y: ( (Math.random() * 500) + 1) * (-1),
     w: 60, 
-    h: 80,
-    dy: 4,
+    h: 70,
+    dy: 8,
 };
 
 function drawTito(){
@@ -235,52 +224,20 @@ function moveTito(){
 /* background */
 
 function drawBackground(){
-
-    var m = 0;
-    var x = 5;
-    var y = 3;
+    iter++;
+    var m = -120; 
+    var x = 0;
     ctx.fillStyle = "#3db303"
-    if(Math.floor(rival.y) % 2 == 0)
-        x = 0;
-    else x = 5;
-
-
+   
     while(m < canvas.height){
-        
-        /* grass */
-     /*   if(m % 30 == 0){
-            y = 3;
-            ctx.fillStyle = "#7af13f";
-        }else{
-            ctx.fillStyle = "#3db303";
-            y = 0;
-        }
-
-        if(m % 30 == 0){
-            ctx.fillStyle = "#7af13f";
-        }else{
-            ctx.fillStyle = "#3db303";
-        }
-
-        ctx.beginPath();
-        ctx.moveTo(0, 0 + m + x);
-        ctx.lineTo(0, 10 + m + x);    
-        ctx.lineTo(5 + y, 5 + m + x);    
-        ctx.fill();
-        ctx.closePath();
-
-        ctx.beginPath();
-        ctx.moveTo(canvas.width, 0 + m + x);
-        ctx.lineTo(canvas.width, 10 + m + x);    
-        ctx.lineTo(canvas.width - 5 - y, 5 + m + x);    
-        ctx.fill();
-        ctx.closePath();
-
+        if(iter % 2 == 0)
+            x = 1;
+        else x = 5;
         /* middle white lines */
         if(m % 100 == 0)
         {
         ctx.beginPath();
-        ctx.rect( (canvas.width/2) - 5, 0 + m - 4*x, 10, 40);
+        ctx.rect( (canvas.width/2) - 5, m + 11 * iter, 10, 40);
         ctx.fillStyle = "#fefefe";
         ctx.fill();
         ctx.closePath();
@@ -300,17 +257,23 @@ function drawBackground(){
     ctx.fillStyle = "#fefefe";
     ctx.fill();
     ctx.closePath();
+
+    if(iter > 15)
+        iter = 0;
 }
 
 
 /* score*/
 
 function drawScore() {
-    ctxT.fillStyle = "#ae0e03";
-    ctxT.font = "40px Arial";
-    ctxT.fillText(`MaxScore: ${maxScore}`, 10, 50);
     ctxT.fillStyle = "#f13f3f";
-    ctxT.fillText(`Score: ${score}`, 10, 100);
+    ctxT.font = "60px Verdana";
+    ctxT.fillText(`Kill Tito`, 10, 70);
+    ctxT.fillStyle = "#ab5f03";
+    ctxT.font = "40px Ubuntu Mono";
+    ctxT.fillText(`MaxScore: ${maxScore}`, 10, 150);
+    ctxT.fillStyle = "#d77803";
+    ctxT.fillText(`Score: ${score}`, 10, 200);
 }
 
 
@@ -340,7 +303,7 @@ function update(){
     draw();
     requestAnimationFrame(update);
 }
-
+myMusic.play();
 update();
 
 
