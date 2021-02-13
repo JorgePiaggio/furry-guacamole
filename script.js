@@ -3,6 +3,8 @@ canvas.height = window.innerHeight;
 const canvasText = document.getElementById("canvasText");
 const carImg = document.getElementById('car');
 const rivalImg = document.getElementById('rival');
+const rival2Img = document.getElementById('rival2');
+const rival3Img = document.getElementById('rival3');
 const holeImg = document.getElementById('hole');
 const peopleImg = document.getElementById('people');
 const titoImg = document.getElementById('tito');
@@ -83,7 +85,7 @@ function moveCar(){
         if( (car.y > tito.y && car.y < tito.y + tito.h) || (car.y + car.h > tito.y && car.y + car.h < tito.y + tito.h) ){                
             dead = true;
             score += 100;
-            tito.y += car.h;
+            tito.y += (car.h/2);
         }
     }
 }
@@ -199,7 +201,7 @@ const tito = {
     y: ( (Math.random() * 500) + 1) * (-1),
     w: 60, 
     h: 70,
-    dy: 8,
+    dy: 7,
 };
 
 function drawTito(){
@@ -228,7 +230,7 @@ function drawBackground(){
     var m = -120; 
     var x = 0;
     ctx.fillStyle = "#3db303"
-   
+
     while(m < canvas.height){
         if(iter % 2 == 0)
             x = 1;
@@ -244,6 +246,7 @@ function drawBackground(){
         }
         m += 10;
     }
+    
 
     /* sides - white lines */
     ctx.beginPath();
@@ -263,12 +266,12 @@ function drawBackground(){
 }
 
 
-/* score*/
-
+/* menu */
 function drawScore() {
     ctxT.fillStyle = "#f13f3f";
     ctxT.font = "60px Verdana";
     ctxT.fillText(`Kill Tito`, 10, 70);
+    ctxT.drawImage(titoImg, 225, -3, tito.w*2, tito.h*2);
     ctxT.fillStyle = "#ab5f03";
     ctxT.font = "40px Ubuntu Mono";
     ctxT.fillText(`MaxScore: ${maxScore}`, 10, 150);
@@ -284,7 +287,6 @@ function drawScore() {
 function draw(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctxT.clearRect(0, 0, canvasText.width, canvasText.height);
-    
     drawBackground();
     drawHole();
     drawTito();

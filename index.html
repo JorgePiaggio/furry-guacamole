@@ -12,19 +12,22 @@
           background-size: cover;
         }
     </style> 
-    <title>Document</title>
+    <title>Kill Tito</title>
 </head>
 
 <body>
     <canvas id="canvas" width="200" height="650"></canvas>
     <div class="menu">
-    <canvas id="canvasText" width="300" height="230"></canvas>
+    <canvas id="canvasText" width="350" height="230"></canvas>
         <button onclick="play()" type="button">Play</button>
         <button onclick="pause()" type="button">Pause</button>
+        <button onclick="info()" type="button">Info</button>
     </div>    
     <div style="display:none;">
         <img id="car" src="car.png">
         <img id="rival" src="rival.png">
+        <img id="rival2" src="rival2.png">
+        <img id="rival3" src="rival3.png">
         <img id="hole" src="hole.png">
         <img id="people" src="fsa.png">
         <img id="tito" src="tito.png">
@@ -44,6 +47,9 @@
      }
      function pause() {
      myMusic.pause();
+     }
+     function info() {
+        confirm(`Tito used to be a Hard Rocker, but now he is turning into Cachengue-Boy!\n\nKill him before he becomes a monster!\n\n\n\n- Game by Chorche - `);
      }
      </script>
     <script src="script.js"></script>
