@@ -6,7 +6,7 @@ const rivalImg = document.getElementById('rival');
 const rival2Img = document.getElementById('rival2');
 const rival3Img = document.getElementById('rival3');
 const holeImg = document.getElementById('hole');
-const peopleImg = document.getElementById('people');
+const bikeImg = document.getElementById('bike');
 const titoImg = document.getElementById('tito');
 const titoImg2 = document.getElementById('tito2');
 const boomImg = document.getElementById('boom');
@@ -72,9 +72,9 @@ function moveCar(){
             restore();
         }
     }
-        /* people collision */ 
-    if( (car.x > people.x && (car.x < people.x + people.w - 10)) || (car.x + car.w > people.x && (car.x + car.w < people.x + people.w - 10)) ){
-        if( (car.y > people.y && car.y < people.y + people.h) || (car.y + car.h > people.y && car.y + car.h < people.y + people.h) ){
+        /* bike collision */ 
+    if( (car.x > bike.x && (car.x < bike.x + bike.w - 10)) || (car.x + car.w > bike.x && (car.x + car.w < bike.x + bike.w - 10)) ){
+        if( (car.y > bike.y && car.y < bike.y + bike.h) || (car.y + car.h > bike.y && car.y + car.h < bike.y + bike.h) ){
             ctx.drawImage(boomImg, xAxis - 40, yAxis - 40, 100, 100);    
             confirm(`Better Kill Diego!\n\nScore: ${score}`);
             restore();
@@ -94,8 +94,8 @@ function moveCar(){
 function restore(){
     hole.x = Math.random() * (canvas.width - hole.w);
     hole.y = ( (Math.random() * 2500) + 1) * (-1);
-    people.x = Math.random() * (canvas.width - people.w);
-    people.y = ( (Math.random() * 2500) + 1) * (-1);
+    bike.x = Math.random() * (canvas.width - bike.w);
+    bike.y = ( (Math.random() * 2500) + 1) * (-1);
     rival.x = Math.random() * (canvas.width - car.w - 10) + 10;
     rival.y = ( (Math.random() * 500) + 1) * (-1);
     car.y = canvas.height - 70;
@@ -133,8 +133,8 @@ function moveRival(){
         rival.x = 0;
     
     /* collision check */
-    if((rival.y > people.y-5 && rival.y < people.y+people.h) || (people.y > rival.y-5 && people.y < rival.y+rival.h))
-        people.dy = rival.dy;
+    if((rival.y > bike.y-5 && rival.y < bike.y+bike.h) || (bike.y > rival.y-5 && bike.y < rival.y+rival.h))
+    bike.dy = rival.dy;
 
     /*restore*/
     if(rival.y > canvas.height){
@@ -171,8 +171,8 @@ function moveHole(){
 }
 
 
-/* people */
-const people = {
+/* bike */
+const bike = {
     x: Math.random() * (canvas.width - 40),
     y: -500,
     w: 30, 
@@ -180,16 +180,16 @@ const people = {
     dy: 8,
 };
 
-function drawPeople(){
-    ctx.drawImage(peopleImg, people.x, people.y, people.w, people.h);
+function drawBike(){
+    ctx.drawImage(bikeImg, bike.x, bike.y, bike.w, bike.h);
 }
 
-function movePeople(){
-    people.y += people.dy;
+function moveBike(){
+    bike.y += bike.dy;
 
-    if(people.y > canvas.height){
-        people.y = -6130 + (Math.random() * 2) + 1;
-        people.x = Math.random() * (canvas.width - people.w);
+    if(bike.y > canvas.height){
+        bike.y = -6130 + (Math.random() * 2) + 1;
+        bike.x = Math.random() * (canvas.width - bike.w);
         score += 5;
     }
 }
@@ -266,7 +266,7 @@ function drawBackground(){
 }
 
 
-/* menu */
+/* menu **********************************************************/
 function drawScore() {
     ctxT.fillStyle = "#f13f3f";
     ctxT.font = "60px Verdana";
@@ -293,14 +293,14 @@ function draw(){
     drawCar();
     drawScore();
     drawRival();
-    drawPeople();
+    drawBike();
 }
 
 function update(){
     moveCar();
     moveRival();
     moveHole();
-    movePeople();
+    moveBike();
     moveTito();
     draw();
     requestAnimationFrame(update);
