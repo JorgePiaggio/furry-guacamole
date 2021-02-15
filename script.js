@@ -23,6 +23,7 @@ let dead = false;
 let level = 0;
 let rivals = new Array();
 let rivalsSpeed = 2;
+let middleLines = new Array();
 const lane = [10, 55, 110, 155];
 
 
@@ -72,7 +73,7 @@ const hole = {
     y: -5000 * (Math.random() * 5) + 1,
     w: 50,
     h: 40,
-    dy: 10,
+    /*dy: 10,*/
 };
 
 function drawHole(){
@@ -80,7 +81,7 @@ function drawHole(){
 }
 
 function moveHole(){
-    hole.y += hole.dy;
+    hole.y += (rivalsSpeed * 3);
 
     if(hole.y > canvas.height){
         hole.y = -3000 * (Math.random() * 5) + 1;
@@ -106,7 +107,7 @@ function drawTito(){
 }
 
 function moveTito(){
-    tito.y += rivalsSpeed;
+    tito.y += (rivalsSpeed * 3);
 
     if(tito.y > canvas.height){
         var space = ((Math.random() * 700) + 1) * (-1);
@@ -126,8 +127,8 @@ function moveTito(){
     }
 }
 
-/* rival cars *************************/
 
+/* rival cars *************************/
 const rival = {
     w: 38,
     h: 70,
@@ -150,7 +151,6 @@ function fillRivals(numberOfObstacles){
         if(i > 0){
             posY = ( rivals[i-1][1] + distance);
         }
-        console.log("d: ", distance,"pos: ", posY);
         var carData = [posX, posY, img];
         rivals.push(carData);
     }
@@ -182,7 +182,6 @@ function drawRivals(){
 function moveRivals(){
     for(var i = 0; i < rivals.length; i++){
         rivals[i][1] += rivalsSpeed;
-
 
         if(rivals[i][2] == 2){  /* red car */
             rivals[i][0] += (Math.floor(Math.random() * 7) - 3);
@@ -268,44 +267,49 @@ function restore(){
 /**************************************************************************************************************************/
 /* background */
 
-function drawBackground(){
-    iter++;
-    var m = -120; 
-    var x = 0;
-    ctx.fillStyle = "#3db303"
+function fillWhiteLines(){
+    var i = 0;
+    while(i * 80 < canvas.height)
+    {
+        middleLines.push([canvas.width/2-5, i * 160]);
+        i++;
+    }
+    console.log(middleLines);
+}
+function moveWhiteLines(){
+    for(var i = 0; i < middleLines.length; i++){
+        middleLines[i][1] += (rivalsSpeed * 3);
+        if(middleLines[i][1] > canvas.height){
+            middleLines[i][1] = -160;
+        }
+    }
 
-    while(m < canvas.height){
-        if(iter % 2 == 0)
-            x = 1;
-        else x = 5;
-        /* middle white lines */
-        if(m % 100 == 0)
-        {
+}
+function drawBackground(){
+
+    /* middle white lines */
+    for(var i = 0; i < middleLines.length; i++){
         ctx.beginPath();
-        ctx.rect( (canvas.width/2) - 5, m + 11 * iter, 10, 40);
+        ctx.rect(middleLines[i][0], middleLines[i][1], 10, 40);
         ctx.fillStyle = "#fefefe";
         ctx.fill();
         ctx.closePath();
-        }
-        m += 10;
     }
-    
 
     /* sides - white lines */
     ctx.beginPath();
-    ctx.rect( 5, 0, 5, canvas.height);
+    ctx.rect(5, 0, 5, canvas.height);
     ctx.fillStyle = "#fefefe";
     ctx.fill();
     ctx.closePath();
 
     ctx.beginPath();
-    ctx.rect( canvas.width-10, 0, 5, canvas.height);
+    ctx.rect(canvas.width-10, 0, 5, canvas.height);
     ctx.fillStyle = "#fefefe";
     ctx.fill();
     ctx.closePath();
 
-    if(iter > 15)
-        iter = 0;
+  
 }
 
 
@@ -316,8 +320,9 @@ function drawScore() {
     ctxT.fillStyle = "#000000";
     ctxT.fillRect(0, 0, 235, 140);
     ctxT.fillStyle = "#f70505";
-    ctxT.font = "60px Verdana";
-    ctxT.fillText(`Kill Tito`, 5, 90);
+    ctxT.font = "60px Ubuntu Mono";
+    ctxT.fillText(`K i l l`, 10, 60);
+    ctxT.fillText(`T i t o`, 10, 120);
     ctxT.drawImage(titoImg, 215, -3, tito.w*2+20, tito.h*2);
     
     ctxS.fillStyle = "#000000";
@@ -352,7 +357,6 @@ function draw(){
     drawCar();
     drawScore();
     drawRivals();
-    console.log(rivals.length);
     if(rivals.length === (20 + 5 * (level-1)) && rivals[0][1] < 50 ){
         drawLevel();
     }
@@ -365,6 +369,7 @@ function update(){
             score += 250;
     }
     moveRivals();
+    moveWhiteLines();
     moveHole();
     moveTito();
     moveCar();
@@ -374,7 +379,7 @@ function update(){
 }
 
 //myMusic.play();
-//fillRivals(20);
+fillWhiteLines();
 update();
 
 

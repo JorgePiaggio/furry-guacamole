@@ -5,7 +5,8 @@
 body {
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
+  justify-content:space-between;
+  /*align-items: flex-start;*/
   min-height: 100vh;
   padding: 1vw;
   margin: 0;
@@ -24,7 +25,6 @@ button {
 #canvas {
   background-color: #4f4e4e;
   display: inline-block;
-  border-radius: 5px;
   margin-left: 1vw;
   margin-top: -1vw;
   margin-bottom: -1vw;
@@ -32,9 +32,9 @@ button {
 
 #gameMenu {
   background-color: rgb(174, 170, 170);
-  display: inline-block;
+  /*display: inline-block;*/
   border-radius: 5px;
-  margin-left: 50vw;
+  /*margin-left: 50vw;*/
   margin-top: 5vh;
 }
 
@@ -49,4 +49,12 @@ button {
   display: inline-block;
   border-radius: 5px;
   margin-top: 3vh;
+}
+
+
+@media only screen and (min-width: 600px)
+{
+  #gameMenu, #gameStats, button {
+    margin-right: 8vw;
+  }
 }
