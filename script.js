@@ -1,24 +1,30 @@
 const canvas = document.getElementById("canvas");
 canvas.height = window.innerHeight;
-const canvasText = document.getElementById("canvasText");
+const canvasText = document.getElementById("gameMenu");
+const canvasStats = document.getElementById("gameStats");
+const ctx = canvas.getContext('2d');
+const ctxT = canvasText.getContext('2d');
+const ctxS = canvasStats.getContext('2d');
 const carImg = document.getElementById('car');
 const rivalImg = document.getElementById('rival');
 const rivalImg2= document.getElementById('rival2');
 const rivalImg3 = document.getElementById('rival3');
 const rivalImg4 = document.getElementById('bike');
-
 const holeImg = document.getElementById('hole');
 const titoImg = document.getElementById('tito');
 const titoImg2 = document.getElementById('tito2');
 const boomImg = document.getElementById('boom');
-const ctx = canvas.getContext('2d');
-const ctxT = canvasText.getContext('2d');
 var myMusic= document.getElementById("music");
 
+let iter = 0;
 let score = 0;
 let maxScore = 0;
 let dead = false;
-let iter = 0;
+let level = 0;
+let rivals = new Array();
+let rivalsSpeed = 2;
+const lane = [10, 55, 110, 155];
+
 
 
 /**************************************************************************************************************************/
@@ -87,10 +93,9 @@ function moveHole(){
 /* tito */
 const tito = {
     x: Math.random() * (canvas.width - 65) + 5,
-    y: ( (Math.random() * 500) + 1) * (-1),
+    y: ((Math.random() * 700) + 1) * (-1),
     w: 60, 
     h: 70,
-    dy: 6,
 };
 
 function drawTito(){
@@ -98,14 +103,24 @@ function drawTito(){
         ctx.drawImage(titoImg, tito.x, tito.y, tito.w, tito.h);
     else
         ctx.drawImage(titoImg2, tito.x, tito.y, tito.w, tito.h);
-
 }
 
 function moveTito(){
-    tito.y += tito.dy;
+    tito.y += rivalsSpeed;
 
     if(tito.y > canvas.height){
-        tito.y = -6130 + (Math.random() * 2) + 1;
+        var space = ((Math.random() * 700) + 1) * (-1);
+        if(rivals.length > 10){
+            for(var i = 5; i < rivals.length -1 ; i++){
+                if(Math.abs(rivals[i][1] - rivals[i+1][1]) > 150){
+                    space = rivals[i][1] - 100;
+                    break;
+                }
+            }
+        }else{
+            space = rivals[rivals.length -1 ][1] -150;
+        }
+        tito.y = space;
         tito.x = Math.random() * (canvas.width - tito.w);
         dead = false;
     }
@@ -117,24 +132,26 @@ const rival = {
     w: 38,
     h: 70,
 };
-let rivals = new Array();
-const lane = [10, 55, 110, 155];
-const rivalsSpeed = 3;
 
-function fillRivals(){
+
+function fillRivals(numberOfObstacles){
     var freeRun = 500;
+    level++;
+    rivalsSpeed++;
 
-    while(rivals.length < 30){
+    for(var i = 0; i < numberOfObstacles; i++){
         var img = Math.floor(Math.random() * 4) + 1;
         var laneNum = Math.floor(Math.random() * 4);
         var posX = lane[laneNum];
+        var posY = -1 * (freeRun); 
+        
+        var distance = -1 * ((Math.floor(Math.random() * 150)) + 150);
 
-        var distance = (Math.floor(Math.random() * 150)) + 150;
-        var posY = -1 * (freeRun + distance); 
+        if(i > 0){
+            posY = ( rivals[i-1][1] + distance);
+        }
         console.log("d: ", distance,"pos: ", posY);
         var carData = [posX, posY, img];
-        freeRun += 150;
-
         rivals.push(carData);
     }
 }
@@ -165,6 +182,29 @@ function drawRivals(){
 function moveRivals(){
     for(var i = 0; i < rivals.length; i++){
         rivals[i][1] += rivalsSpeed;
+
+
+        if(rivals[i][2] == 2){  /* red car */
+            rivals[i][0] += (Math.floor(Math.random() * 7) - 3);
+        }
+
+        if(rivals[i][2] == 4){  /* bike */
+            if(rivals[i][1] > canvas.height/3 && rivals[i][1] < canvas.height - 50){
+                if(rivals[i][0] <= canvas.width/2){
+                    rivals[i][0]++;
+                }else{
+                    rivals[i][0]--;
+                }
+            }   
+        }
+
+        if(rivals[i][0] + rival.w > canvas.width){
+            rivals[i][0] = canvas.width - rival.w;
+        }if(rivals[i][0] < 0){
+            rivals[i][0] = 0;
+        }
+
+        /* rival out of bounds */
         if(rivals[i][1] > canvas.height){
             rivals.shift();
             score += 10;
@@ -196,7 +236,7 @@ function checkCollision(){
     if( (car.x > hole.x + 8 && (car.x < hole.x + hole.w - 10)) || (car.x + car.w > hole.x + 8 && (car.x + car.w < hole.x + hole.w - 10)) ){
         if( (car.y > hole.y + 8 && car.y < hole.y + hole.h - 10) || (car.y + car.h > hole.y + 8 && car.y + car.h < hole.y + hole.h - 10) ){
             ctx.drawImage(boomImg, xAxis - 40, yAxis - 40, 100, 100);    
-            confirm(`Game Over Perra!\n\nScore: ${score}`);
+            confirm(`Better Kill Diego!!\n\nScore: ${score}`);
             restore();
         }
     }
@@ -221,7 +261,8 @@ function restore(){
     if(score > maxScore)
         maxScore = score;
     score = 0;
-
+    level = 0;
+    rivalsSpeed = 2;
 }
 
 /**************************************************************************************************************************/
@@ -272,15 +313,29 @@ function drawBackground(){
 /* menu */
 
 function drawScore() {
-    ctxT.fillStyle = "#f13f3f";
+    ctxT.fillStyle = "#000000";
+    ctxT.fillRect(0, 0, 235, 140);
+    ctxT.fillStyle = "#f70505";
     ctxT.font = "60px Verdana";
-    ctxT.fillText(`Kill Tito`, 10, 70);
-    ctxT.drawImage(titoImg, 225, -3, tito.w*2, tito.h*2);
-    ctxT.fillStyle = "#ab5f03";
-    ctxT.font = "40px Ubuntu Mono";
-    ctxT.fillText(`MaxScore: ${maxScore}`, 10, 150);
-    ctxT.fillStyle = "#d77803";
-    ctxT.fillText(`Score: ${score}`, 10, 200);
+    ctxT.fillText(`Kill Tito`, 5, 90);
+    ctxT.drawImage(titoImg, 215, -3, tito.w*2+20, tito.h*2);
+    
+    ctxS.fillStyle = "#000000";
+    ctxS.fillRect(0, 0, 350, 60);
+    ctxS.fillStyle = "#ef8505";
+    ctxS.font = "40px Ubuntu Mono";
+    ctxS.fillText(`Top Score: ${maxScore}`, 10, 45);
+    ctxS.fillStyle = "#d77803";
+    ctxS.fillText(`Level: ${level}`, 10, 105);
+    ctxS.fillText(`Score: ${score}`, 10, 165);
+}
+
+function drawLevel(){
+    ctx.fillStyle = "#000000";
+    ctx.fillRect(20, canvas.height/3 - 30, 160, 40);
+    ctx.fillStyle = "#f70505";
+    ctx.font = "30px Ubuntu Mono";
+    ctx.fillText(`Level ${level}`, 45, canvas.height/3);
 }
 
 
@@ -290,17 +345,24 @@ function drawScore() {
 function draw(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctxT.clearRect(0, 0, canvasText.width, canvasText.height);
+    ctxS.clearRect(0, 0, canvasStats.width, canvasStats.height);
     drawBackground();
     drawHole();
     drawTito();
     drawCar();
     drawScore();
     drawRivals();
+    console.log(rivals.length);
+    if(rivals.length === (20 + 5 * (level-1)) && rivals[0][1] < 50 ){
+        drawLevel();
+    }
 }
 
 function update(){
     if(rivals.length === 0){
-        fillRivals();
+        fillRivals(20 + 5 * level);
+        if(level > 1)
+            score += 250;
     }
     moveRivals();
     moveHole();
@@ -312,7 +374,7 @@ function update(){
 }
 
 //myMusic.play();
-fillRivals();
+//fillRivals(20);
 update();
 
 

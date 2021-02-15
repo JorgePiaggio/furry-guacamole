@@ -16,13 +16,17 @@
 </head>
 
 <body>
+    
     <canvas id="canvas" width="200" height="650"></canvas>
+   
     <div class="menu">
-    <canvas id="canvasText" width="350" height="230"></canvas>
+        <canvas id="gameMenu" width="350" height="140"></canvas>
         <button onclick="play()" type="button">Play</button>
         <button onclick="pause()" type="button">Pause</button>
-        <button onclick="info()" type="button">Info</button>
+        <button onclick="info()" type="button">About</button>
+        <canvas id="gameStats" width="350" height="190"></canvas>
     </div>    
+    
     <div style="display:none;">
         <img id="car" src="img/car.png">
         <img id="rival" src="img/rival.png">
@@ -38,7 +42,6 @@
     <audio id="music">
         <source src="FirstItGiveth.mp3" type="audio/mpeg">
      </audio>
-     
      
      <script>
      var myMusic= document.getElementById("music");
