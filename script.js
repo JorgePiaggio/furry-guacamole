@@ -20,9 +20,11 @@ let iter = 0;
 let score = 0;
 let maxScore = 0;
 let dead = false;
-let level = 0;
+let level = 1;
+let lives = 3;
 let rivals = new Array();
-let rivalsSpeed = 2;
+let rivalsSpeed = 3;
+let freeRun = 500;
 let middleLines = new Array();
 const lane = [10, 55, 110, 155];
 
@@ -94,7 +96,7 @@ function moveHole(){
 /* tito */
 const tito = {
     x: Math.random() * (canvas.width - 65) + 5,
-    y: ((Math.random() * 700) + 1) * (-1),
+    y: ((Math.random() * 1300) + 800) * (-1),
     w: 60, 
     h: 70,
 };
@@ -108,21 +110,22 @@ function drawTito(){
 
 function moveTito(){
     tito.y += (rivalsSpeed * 3);
-
-    if(tito.y > canvas.height){
-        var space = ((Math.random() * 700) + 1) * (-1);
-        if(rivals.length > 10){
-            for(var i = 5; i < rivals.length -1 ; i++){
-                if(Math.abs(rivals[i][1] - rivals[i+1][1]) > 150){
-                    space = rivals[i][1] - 100;
-                    break;
+    
+    /* avoid tito & rival collision */ 
+    if(tito.y > -50 && tito.y < canvas.height){
+        for(var i = 0; i < rivals.length; i++){
+            if( (tito.x > rivals[i][0] + 3 && (tito.x < rivals[i][0] + rival.w - 3)) || (tito.x + tito.w > rivals[i][0] + 3 && (tito.x + tito.w < rivals[i][0] + rival.w - 3)) ){
+                if( (tito.y > rivals[i][1] + 5 && tito.y < rivals[i][1] + rival.h - 5) || (tito.y + tito.h > rivals[i][1] + 5 && tito.y + tito.h < rivals[i][1] + rival.h - 5) ){
+                    tito.y = rivals[i][1] - 50 ;
                 }
             }
-        }else{
-            space = rivals[rivals.length -1 ][1] -150;
         }
-        tito.y = space;
-        tito.x = Math.random() * (canvas.width - tito.w);
+    }
+    
+    if(tito.y > canvas.height){
+        var laneNum = Math.floor(Math.random() * 4);
+        tito.x = lane[laneNum] - 15;
+        tito.y = ((Math.random() * 5300) + 5000) * (-1);
         dead = false;
     }
 }
@@ -136,9 +139,8 @@ const rival = {
 
 
 function fillRivals(numberOfObstacles){
-    var freeRun = 500;
-    level++;
-    rivalsSpeed++;
+    //level++;
+    //rivalsSpeed++;
 
     for(var i = 0; i < numberOfObstacles; i++){
         var img = Math.floor(Math.random() * 4) + 1;
@@ -146,7 +148,7 @@ function fillRivals(numberOfObstacles){
         var posX = lane[laneNum];
         var posY = -1 * (freeRun); 
         
-        var distance = -1 * ((Math.floor(Math.random() * 150)) + 150);
+        var distance = -1 * ((Math.floor(Math.random() * 150)) + 250);
 
         if(i > 0){
             posY = ( rivals[i-1][1] + distance);
@@ -208,6 +210,12 @@ function moveRivals(){
             rivals.shift();
             score += 10;
         }
+        if(rivals.length == 0){     // level complete
+            if(level > 1)
+                score += 250;
+            level++;               
+            rivalsSpeed++;
+        }
     }
 }
 
@@ -221,22 +229,43 @@ function checkCollision(){
 
     /* rival collision */ 
     for(var i = 0; i < rivals.length; i++){
-        
-
         if( (car.x > rivals[i][0] + 3 && (car.x < rivals[i][0] + rival.w - 3)) || (car.x + car.w > rivals[i][0] + 3 && (car.x + car.w < rivals[i][0] + rival.w - 3)) ){
             if( (car.y > rivals[i][1] + 5 && car.y < rivals[i][1] + rival.h - 5) || (car.y + car.h > rivals[i][1] + 5 && car.y + car.h < rivals[i][1] + rival.h - 5) ){
-                ctx.drawImage(boomImg, xAxis - 40, yAxis - 40, 100, 100);    
-                confirm(`You suck!! \n\nScore: ${score}`);
-                restore();
+                if(lives == 1){
+                    ctx.drawImage(boomImg, xAxis - 40, yAxis - 40, 100, 100);       // game over
+                    confirm(`You suck!! \n\nScore: ${score}`);
+                    lives = 3;
+                    level = 1;
+                    if(score > maxScore)
+                        maxScore = score;
+                    score = 0;
+                    restore();
+                }else{                                                              // life lost
+                    ctx.drawImage(boomImg, xAxis - 40, yAxis - 40, 100, 100);      
+                    lives--;  
+                    restore();
+                }                
+                
             }
         }
     }
     /* hole collision */ 
     if( (car.x > hole.x + 8 && (car.x < hole.x + hole.w - 10)) || (car.x + car.w > hole.x + 8 && (car.x + car.w < hole.x + hole.w - 10)) ){
         if( (car.y > hole.y + 8 && car.y < hole.y + hole.h - 10) || (car.y + car.h > hole.y + 8 && car.y + car.h < hole.y + hole.h - 10) ){
-            ctx.drawImage(boomImg, xAxis - 40, yAxis - 40, 100, 100);    
-            confirm(`Better Kill Diego!!\n\nScore: ${score}`);
-            restore();
+            if(lives == 1){
+                ctx.drawImage(boomImg, xAxis - 40, yAxis - 40, 100, 100);       // game over
+                confirm(`Better Kill Diego!!\n\nScore: ${score}`);
+                lives = 3;
+                level = 1;
+                if(score > maxScore)
+                    maxScore = score;
+                score = 0;
+                restore();
+            }else{                                                              // life lost
+                ctx.drawImage(boomImg, xAxis - 40, yAxis - 40, 100, 100);
+                lives--;
+                restore();
+            }       
         }
     }
     /* tito collision */ 
@@ -245,23 +274,25 @@ function checkCollision(){
             if(dead === false)
                 score += 100;
             dead = true;
-            tito.y += (car.h/2);
+            tito.y += (car.h/3);
         }
     }
 }
 
 function restore(){
-    rivals = new Array();
+    //rivals = new Array();
+    if(lives > 0){                                      
+        for(var i = 0; i < rivals.length; i++){
+            rivals[i][1] -= (freeRun*2);
+        }
+    }
     hole.x = Math.random() * (canvas.width - hole.w);
-    hole.y = ( (Math.random() * 2500) + 1) * (-1);
+    hole.y = ( (Math.random() * 3500) + 2000) * (-1);
     car.y = canvas.height - 70;
-    tito.x = Math.random() * (canvas.width - 40) -10 ;
-    tito.y= ( (Math.random() * 500) + 1) * (-1);
-    if(score > maxScore)
-        maxScore = score;
-    score = 0;
-    level = 0;
-    rivalsSpeed = 2;
+    var laneNum = Math.floor(Math.random() * 4);
+    tito.x = lane[laneNum] - 10;
+    tito.y = ((Math.random() * 1300) + 800) * (-1);
+    rivalsSpeed = level + 2;
 }
 
 /**************************************************************************************************************************/
@@ -269,9 +300,9 @@ function restore(){
 
 function fillWhiteLines(){
     var i = 0;
-    while(i * 80 < canvas.height)
+    while(i * 160 < canvas.height)
     {
-        middleLines.push([canvas.width/2-5, i * 160]);
+        middleLines.push( [canvas.width/2 - 5, i * 160] );
         i++;
     }
     console.log(middleLines);
@@ -296,7 +327,7 @@ function drawBackground(){
         ctx.closePath();
     }
 
-    /* sides - white lines */
+    /* sides white lines */
     ctx.beginPath();
     ctx.rect(5, 0, 5, canvas.height);
     ctx.fillStyle = "#fefefe";
@@ -317,6 +348,7 @@ function drawBackground(){
 /* menu */
 
 function drawScore() {
+    // game title canvas
     ctxT.fillStyle = "#000000";
     ctxT.fillRect(0, 0, 235, 140);
     ctxT.fillStyle = "#f70505";
@@ -325,17 +357,27 @@ function drawScore() {
     ctxT.fillText(`T i t o`, 10, 120);
     ctxT.drawImage(titoImg, 215, -3, tito.w*2+20, tito.h*2);
     
+    //scores canvas
     ctxS.fillStyle = "#000000";
     ctxS.fillRect(0, 0, 350, 60);
-    ctxS.fillStyle = "#ef8505";
+    ctxS.fillStyle = "#f78800";
     ctxS.font = "40px Ubuntu Mono";
     ctxS.fillText(`Top Score: ${maxScore}`, 10, 45);
     ctxS.fillStyle = "#d77803";
     ctxS.fillText(`Level: ${level}`, 10, 105);
     ctxS.fillText(`Score: ${score}`, 10, 165);
+    ctxS.fillStyle = "#000000";
+    ctxS.fillRect(0, 190, 350, 100);
+    ctxS.fillStyle = "#ffffff";
+    ctxS.fillRect(120, 190, 5, 70);
+    ctxS.fillRect(220, 190, 5, 70);
+    for(var i = 0; i < lives; i++){
+        ctxS.drawImage(carImg, 50 + i * 100, 200, car.w, car.h);
+    }
 }
 
 function drawLevel(){
+    // level number in route
     ctx.fillStyle = "#000000";
     ctx.fillRect(20, canvas.height/3 - 30, 160, 40);
     ctx.fillStyle = "#f70505";
@@ -357,7 +399,7 @@ function draw(){
     drawCar();
     drawScore();
     drawRivals();
-    if(rivals.length === (20 + 5 * (level-1)) && rivals[0][1] < 50 ){
+    if(rivals.length === (20 + 5 * (level)) && rivals[0][1] < 50 ){
         drawLevel();
     }
 }
@@ -365,8 +407,6 @@ function draw(){
 function update(){
     if(rivals.length === 0){
         fillRivals(20 + 5 * level);
-        if(level > 1)
-            score += 250;
     }
     moveRivals();
     moveWhiteLines();
