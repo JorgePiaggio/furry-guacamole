@@ -14,19 +14,17 @@
     </style> 
     <title>Kill Tito</title>
 </head>
-
 <body>
-    
+    <!--- canvas --->
     <canvas id="canvas" width="200" height="650"></canvas>
    
     <div class="menu">
         <canvas id="gameMenu" width="350" height="140"></canvas>
-        <button onclick="play()" type="button">Play</button>
-        <button onclick="pause()" type="button">Pause</button>
         <button onclick="info()" type="button">About</button>
         <canvas id="gameStats" width="350" height="275"></canvas>
     </div>    
     
+    <!--- images --->
     <div style="display:none;">
         <img id="car" src="img/car.png">
         <img id="rival" src="img/rival.png">
@@ -35,26 +33,13 @@
         <img id="hole" src="img/hole.png">
         <img id="bike" src="img/fsa.png">
         <img id="tito" src="img/tito.png">
-        <img id="tito2" src="img/tito2.png">
+        <img id="tito2" src="img/chicken.png">
         <img id="boom" src="img/explosion.png">
     </div>
 
-    <audio id="music">
-        <source src="FirstItGiveth.mp3" type="audio/mpeg">
-     </audio>
-     
-     <script>
-     var myMusic= document.getElementById("music");
-     function play() {
-     myMusic.play();
-     }
-     function pause() {
-     myMusic.pause();
-     }
-     function info() {
-        confirm(`Tito used to be a Hard Rocker, but now he is turning into Cachengue-Boy!\n\nKill him before he becomes a monster!\n\n\n\n- Game by Chorche - `);
-     }
-     </script>
-    <script src="script.js"></script>
+    <!--- about button --->
+    <script>function info(){confirm(`Tito used to be a Hard Rocker, but now he is turning into Cachengue-Boy!\n\nKill him before he becomes a monster!\n\n----------------------------------------------------------------------------------------------------\n\n\t\t\t\t\t\t  Game \n\t\t\t\t\t\t     by \n\t\t\t\t\t\tChorche\n\n----------------------------------------------------------------------------------------------------`);}</script>
+    
+     <script src="script.js"></script>
 </body>
 </html>

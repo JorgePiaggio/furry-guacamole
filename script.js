@@ -14,7 +14,6 @@ const holeImg = document.getElementById('hole');
 const titoImg = document.getElementById('tito');
 const titoImg2 = document.getElementById('tito2');
 const boomImg = document.getElementById('boom');
-var myMusic= document.getElementById("music");
 
 let iter = 0;
 let score = 0;
@@ -211,8 +210,7 @@ function moveRivals(){
             score += 10;
         }
         if(rivals.length == 0){     // level complete
-            if(level > 1)
-                score += 250;
+            score += 250;
             level++;               
             rivalsSpeed++;
         }
@@ -239,10 +237,12 @@ function checkCollision(){
                     if(score > maxScore)
                         maxScore = score;
                     score = 0;
+                    snd4.play();
                     restore();
                 }else{                                                              // life lost
                     ctx.drawImage(boomImg, xAxis - 40, yAxis - 40, 100, 100);      
-                    lives--;  
+                    lives--;
+                    snd4.play();  
                     restore();
                 }                
                 
@@ -260,10 +260,12 @@ function checkCollision(){
                 if(score > maxScore)
                     maxScore = score;
                 score = 0;
+                snd2.play();
                 restore();
             }else{                                                              // life lost
                 ctx.drawImage(boomImg, xAxis - 40, yAxis - 40, 100, 100);
                 lives--;
+                snd2.play();
                 restore();
             }       
         }
@@ -274,6 +276,7 @@ function checkCollision(){
             if(dead === false)
                 score += 100;
             dead = true;
+            snd3.play();
             tito.y += (car.h/3);
         }
     }
@@ -386,6 +389,45 @@ function drawLevel(){
 }
 
 
+
+/**************************************************************************************************************************/
+/* sounds */
+var snd1  = new Audio();
+var src1  = document.createElement("source");
+src1.type = "audio/mpeg";
+src1.src  = "sounds/zero.mp3";
+snd1.appendChild(src1);
+snd1.volume = 0.7;
+
+var snd2  = new Audio();
+var src2  = document.createElement("source");
+src2.type = "audio/mpeg";
+src2.src  = "sounds/cuidado.opus";
+snd2.appendChild(src2);
+
+var snd3  = new Audio();
+var src3  = document.createElement("source");
+src3.type = "audio/mpeg";
+src3.src  = "sounds/aaa.opus";
+snd3.appendChild(src3);
+
+var snd4  = new Audio();
+var src4  = document.createElement("source");
+src4.type = "audio/mpeg";
+src4.src  = "sounds/noChoquen.opus";
+snd4.appendChild(src4);
+
+var snd5  = new Audio();
+var src5  = document.createElement("source");
+src5.type = "audio/mpeg";
+src5.src  = "sounds/nono.opus";
+snd5.appendChild(src5);
+
+snd1.play(); 
+snd5.play();
+
+
+
 /**************************************************************************************************************************/
 /* main */
 
@@ -399,14 +441,14 @@ function draw(){
     drawCar();
     drawScore();
     drawRivals();
-    if(rivals.length === (20 + 5 * (level)) && rivals[0][1] < 50 ){
+    if(rivals.length === (15 + 5 * (level)) && rivals[0][1] < 50 ){
         drawLevel();
     }
 }
 
 function update(){
     if(rivals.length === 0){
-        fillRivals(20 + 5 * level);
+        fillRivals(15 + 5 * level);
     }
     moveRivals();
     moveWhiteLines();
@@ -418,12 +460,8 @@ function update(){
     requestAnimationFrame(update);
 }
 
-//myMusic.play();
 fillWhiteLines();
 update();
-
-
-
 
 
 
