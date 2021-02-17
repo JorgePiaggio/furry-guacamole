@@ -18,6 +18,7 @@ const boomImg = document.getElementById('boom');
 let iter = 0;
 let score = 0;
 let maxScore = 0;
+let startedGame = false;
 let dead = false;
 let level = 1;
 let lives = 3;
@@ -221,7 +222,7 @@ function moveRivals(){
 /**************************************************************************************************************************/
 /* collisions */
 
-function checkCollision(){
+async function checkCollision(){
     var xAxis = car.x; 
     var yAxis = car.y;
 
@@ -231,21 +232,21 @@ function checkCollision(){
             if( (car.y > rivals[i][1] + 5 && car.y < rivals[i][1] + rival.h - 5) || (car.y + car.h > rivals[i][1] + 5 && car.y + car.h < rivals[i][1] + rival.h - 5) ){
                 if(lives == 1){
                     ctx.drawImage(boomImg, xAxis - 40, yAxis - 40, 100, 100);       // game over
+                    snd1.pause();
+                    snd1.currentTime = 0;
                     confirm(`You suck!! \n\nScore: ${score}`);
                     lives = 3;
                     level = 1;
                     if(score > maxScore)
                         maxScore = score;
                     score = 0;
-                    snd4.play();
                     restore();
                 }else{                                                              // life lost
-                    ctx.drawImage(boomImg, xAxis - 40, yAxis - 40, 100, 100);      
+                    ctx.drawImage(boomImg, xAxis - 40, yAxis - 40, 100, 100); 
                     lives--;
-                    snd4.play();  
-                    restore();
-                }                
-                
+                    snd4.play();     
+                    restore(); 
+                }                            
             }
         }
     }
@@ -254,18 +255,20 @@ function checkCollision(){
         if( (car.y > hole.y + 8 && car.y < hole.y + hole.h - 10) || (car.y + car.h > hole.y + 8 && car.y + car.h < hole.y + hole.h - 10) ){
             if(lives == 1){
                 ctx.drawImage(boomImg, xAxis - 40, yAxis - 40, 100, 100);       // game over
+                snd1.pause(); 
+                snd1.currentTime = 0;
                 confirm(`Better Kill Diego!!\n\nScore: ${score}`);
                 lives = 3;
                 level = 1;
                 if(score > maxScore)
                     maxScore = score;
                 score = 0;
-                snd2.play();
                 restore();
             }else{                                                              // life lost
                 ctx.drawImage(boomImg, xAxis - 40, yAxis - 40, 100, 100);
                 lives--;
                 snd2.play();
+                var i = 0;
                 restore();
             }       
         }
@@ -295,7 +298,9 @@ function restore(){
     var laneNum = Math.floor(Math.random() * 4);
     tito.x = lane[laneNum] - 10;
     tito.y = ((Math.random() * 1300) + 800) * (-1);
+    dead = false;
     rivalsSpeed = level + 2;
+    snd1.play();
 }
 
 /**************************************************************************************************************************/
@@ -303,7 +308,7 @@ function restore(){
 
 function fillWhiteLines(){
     var i = 0;
-    while(i * 160 < canvas.height)
+    while(i * 80 < canvas.height)
     {
         middleLines.push( [canvas.width/2 - 5, i * 160] );
         i++;
@@ -363,10 +368,10 @@ function drawScore() {
     //scores canvas
     ctxS.fillStyle = "#000000";
     ctxS.fillRect(0, 0, 350, 60);
-    ctxS.fillStyle = "#f78800";
+    ctxS.fillStyle = "#d77803";
     ctxS.font = "40px Ubuntu Mono";
     ctxS.fillText(`Top Score: ${maxScore}`, 10, 45);
-    ctxS.fillStyle = "#d77803";
+    ctxS.fillStyle = "#f78800";
     ctxS.fillText(`Level: ${level}`, 10, 105);
     ctxS.fillText(`Score: ${score}`, 10, 165);
     ctxS.fillStyle = "#000000";
@@ -395,26 +400,28 @@ function drawLevel(){
 var snd1  = new Audio();
 var src1  = document.createElement("source");
 src1.type = "audio/mpeg";
-src1.src  = "sounds/zero.mp3";
+src1.src  = "sounds/zero.ogg";
 snd1.appendChild(src1);
 snd1.volume = 0.7;
+snd1.loop = true;
 
 var snd2  = new Audio();
 var src2  = document.createElement("source");
 src2.type = "audio/mpeg";
-src2.src  = "sounds/cuidado.opus";
+src2.src  = "sounds/cuidadoTio.ogg";
 snd2.appendChild(src2);
 
 var snd3  = new Audio();
 var src3  = document.createElement("source");
 src3.type = "audio/mpeg";
-src3.src  = "sounds/aaa.opus";
+src3.src  = "sounds/aaa.ogg";
 snd3.appendChild(src3);
+snd3.volume = 0.7;
 
 var snd4  = new Audio();
 var src4  = document.createElement("source");
 src4.type = "audio/mpeg";
-src4.src  = "sounds/noChoquen.opus";
+src4.src  = "sounds/noChoquen.ogg";
 snd4.appendChild(src4);
 
 var snd5  = new Audio();
@@ -423,9 +430,12 @@ src5.type = "audio/mpeg";
 src5.src  = "sounds/nono.opus";
 snd5.appendChild(src5);
 
-snd1.play(); 
-snd5.play();
 
+var snd6  = new Audio();
+var src6  = document.createElement("source");
+src6.type = "audio/mpeg";
+src6.src  = "sounds/gameOver.ogg";
+snd6.appendChild(src6);
 
 
 /**************************************************************************************************************************/
@@ -441,14 +451,14 @@ function draw(){
     drawCar();
     drawScore();
     drawRivals();
-    if(rivals.length === (15 + 5 * (level)) && rivals[0][1] < 50 ){
+    if(rivals.length === (10 + 5 * (level)) && rivals[0][1] < 50 ){
         drawLevel();
     }
 }
 
 function update(){
     if(rivals.length === 0){
-        fillRivals(15 + 5 * level);
+        fillRivals(10 + 5 * level);
     }
     moveRivals();
     moveWhiteLines();
@@ -461,10 +471,16 @@ function update(){
 }
 
 fillWhiteLines();
-update();
+draw();
 
-
-
+function startGame(){
+    if(!startedGame){
+        snd1.play(); 
+        snd5.play();
+        update();
+        startedGame = true;
+    }    
+}
 
 
 
@@ -478,8 +494,15 @@ function keyDown(e) {
         car.dx = -car.speed;
     } else if (e.key === "Up" || e.key === "ArrowUp") {
         car.dy = -car.speed;
+        if(!startedGame){
+            startGame();
+        }
     } else if (e.key === "Down" || e.key === "ArrowDown") {
         car.dy =car.speed;
+    }else if (e.key === "Enter") {
+        if(!startedGame){
+            startGame();
+        }
     }
   }
   
