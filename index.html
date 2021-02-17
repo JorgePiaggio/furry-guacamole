@@ -4,54 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">    
-    <style>
-        body {
-          background-image: url('back.jpg');
-          background-repeat: no-repeat;
-          background-attachment: fixed;
-          background-size: cover;
-        }
-    </style> 
     <title>Kill Tito</title>
 </head>
-
 <body>
+    <!--- canvas --->
     <canvas id="canvas" width="200" height="650"></canvas>
+   
     <div class="menu">
-    <canvas id="canvasText" width="350" height="230"></canvas>
-        <button onclick="play()" type="button">Play</button>
-        <button onclick="pause()" type="button">Pause</button>
-        <button onclick="info()" type="button">Info</button>
+        <canvas id="gameMenu" width="350" height="140"></canvas>
+        <canvas id="gameStats" width="350" height="275"></canvas>
+
+        <div class="btns">
+            <button onclick="startGame()" type="button">Play</button>
+            <button onclick="info()" type="button">About</button>
+        </div>
+
     </div>    
+    
+    <!--- images --->
     <div style="display:none;">
-        <img id="car" src="car.png">
-        <img id="rival" src="rival.png">
-        <img id="rival2" src="rival2.png">
-        <img id="rival3" src="rival3.png">
-        <img id="hole" src="hole.png">
-        <img id="people" src="fsa.png">
-        <img id="tito" src="tito.png">
-        <img id="tito2" src="tito2.png">
-        <img id="boom" src="explosion.png">
+        <img id="car" src="img/car.png">
+        <img id="rival" src="img/rival.png">
+        <img id="rival2" src="img/rival2.png">
+        <img id="rival3" src="img/rival3.png">
+        <img id="hole" src="img/hole.png">
+        <img id="bike" src="img/fsa.png">
+        <img id="tito" src="img/tito.png">
+        <img id="tito2" src="img/chicken.png">
+        <img id="boom" src="img/explosion.png">
     </div>
 
-    <audio id="music">
-        <source src="FirstItGiveth.mp3" type="audio/mpeg">
-     </audio>
-     
-     
-     <script>
-     var myMusic= document.getElementById("music");
-     function play() {
-     myMusic.play();
-     }
-     function pause() {
-     myMusic.pause();
-     }
-     function info() {
-        confirm(`Tito used to be a Hard Rocker, but now he is turning into Cachengue-Boy!\n\nKill him before he becomes a monster!\n\n\n\n- Game by Chorche - `);
-     }
-     </script>
-    <script src="script.js"></script>
+    <!--- about button --->
+    <script>function info(){confirm(`Tito used to be a Hard Rocker, but now he is turning into Cachengue-Boy!\n\nKill him before he becomes a monster!\n\n----------------------------------------------------------------------------------------------------\n\n\t\t\t\t\t\t  Game \n\t\t\t\t\t\t     by \n\t\t\t\t\t\tChorche\n\n----------------------------------------------------------------------------------------------------`);}</script>
+    
+     <script src="script.js"></script>
 </body>
 </html>
