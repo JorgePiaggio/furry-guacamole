@@ -1,5 +1,7 @@
 const canvas = document.getElementById("canvas");
-canvas.height = window.innerHeight;
+if(window.innerHeight > 600){
+    canvas.height = window.innerHeight;
+}else canvas.height = 600;
 const canvasText = document.getElementById("gameMenu");
 const canvasStats = document.getElementById("gameStats");
 const ctx = canvas.getContext('2d');
@@ -522,6 +524,36 @@ function keyUp(e) {
     }
   }
 
+  function touchHandler(event)
+  {
+      var touches = event.changedTouches,
+          first = touches[0],
+          type = "";
+      switch(event.type)
+      {
+          case "touchstart": type = "mousedown"; break;
+          case "touchmove":  type = "mousemove"; break;        
+          case "touchend":   type = "mouseup";   break;
+          default:           return;
+      }
+  
+      // initMouseEvent(type, canBubble, cancelable, view, clickCount, 
+      //                screenX, screenY, clientX, clientY, ctrlKey, 
+      //                altKey, shiftKey, metaKey, button, relatedTarget);
+  
+      var simulatedEvent = document.createEvent("MouseEvent");
+      simulatedEvent.initMouseEvent(type, true, true, window, 1, 
+                                    first.screenX, first.screenY, 
+                                    first.clientX, first.clientY, false, 
+                                    false, false, false, 0/*left*/, null);
+  
+      first.target.dispatchEvent(simulatedEvent);
+      event.preventDefault();
+  }
 
+
+  document.addEventListener("touchstart", touchHandler, true);
+  document.addEventListener("touchend", touchHandler, true);
+  document.addEventListener("touchcancel", touchHandler, true);    
 document.addEventListener("keydown", keyDown);
 document.addEventListener("keyup", keyUp);
