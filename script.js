@@ -1,7 +1,4 @@
 const canvas = document.getElementById("canvas");
-if(window.innerHeight > 600){
-    canvas.height = window.innerHeight;
-}else canvas.height = 600;
 const canvasText = document.getElementById("gameMenu");
 const canvasStats = document.getElementById("gameStats");
 const ctx = canvas.getContext('2d');
@@ -16,6 +13,9 @@ const holeImg = document.getElementById('hole');
 const titoImg = document.getElementById('tito');
 const titoImg2 = document.getElementById('tito2');
 const boomImg = document.getElementById('boom');
+if(window.innerHeight > 600){
+    canvas.height = window.innerHeight;
+}else canvas.height = 600;
 
 let iter = 0;
 let score = 0;
@@ -188,9 +188,17 @@ function moveRivals(){
         rivals[i][1] += rivalsSpeed;
 
         if(rivals[i][2] == 2){  /* red car */
-            rivals[i][0] += (Math.floor(Math.random() * 7) - 3);
+            rivals[i][0] += (Math.floor(Math.random() * 5) - 2);
         }
-
+        if(rivals[i][2] == 1){  /* yellow car */
+            if(rivals[i][1] > 0 && rivals[i][1] <  canvas.height/2 - 100 ){
+                if(rivals[i][0] <= car.x){
+                    rivals[i][0]++;
+                }else{
+                    rivals[i][0]--;
+                }
+            }           
+        }
         if(rivals[i][2] == 4){  /* bike */
             if(rivals[i][1] > canvas.height/3 && rivals[i][1] < canvas.height - 50){
                 if(rivals[i][0] <= canvas.width/2){
@@ -231,7 +239,7 @@ async function checkCollision(){
     /* rival collision */ 
     for(var i = 0; i < rivals.length; i++){
         if( (car.x > rivals[i][0] + 3 && (car.x < rivals[i][0] + rival.w - 3)) || (car.x + car.w > rivals[i][0] + 3 && (car.x + car.w < rivals[i][0] + rival.w - 3)) ){
-            if( (car.y > rivals[i][1] + 5 && car.y < rivals[i][1] + rival.h - 5) || (car.y + car.h > rivals[i][1] + 5 && car.y + car.h < rivals[i][1] + rival.h - 5) ){
+            if( (car.y > rivals[i][1] + 3 && car.y < rivals[i][1] + rival.h - 3) || (car.y + car.h > rivals[i][1] + 3 && car.y + car.h < rivals[i][1] + rival.h - 3) ){
                 if(lives == 1){
                     ctx.drawImage(boomImg, xAxis - 40, yAxis - 40, 100, 100);       // game over
                     snd1.pause();
@@ -244,7 +252,7 @@ async function checkCollision(){
                     score = 0;
                     restore();
                 }else{                                                              // life lost
-                    ctx.drawImage(boomImg, xAxis - 40, yAxis - 40, 100, 100); 
+                    ctx.drawImage(boomImg, xAxis - 40, yAxis - 40, 100, 100);
                     lives--;
                     snd4.play();     
                     restore(); 
@@ -404,7 +412,7 @@ var src1  = document.createElement("source");
 src1.type = "audio/mpeg";
 src1.src  = "sounds/zero.ogg";
 snd1.appendChild(src1);
-snd1.volume = 0.7;
+//snd1.volume = 1;
 snd1.loop = true;
 
 var snd2  = new Audio();
@@ -412,6 +420,7 @@ var src2  = document.createElement("source");
 src2.type = "audio/mpeg";
 src2.src  = "sounds/cuidadoTio.ogg";
 snd2.appendChild(src2);
+snd2.volume = 0.7;
 
 var snd3  = new Audio();
 var src3  = document.createElement("source");
@@ -425,12 +434,14 @@ var src4  = document.createElement("source");
 src4.type = "audio/mpeg";
 src4.src  = "sounds/noChoquen.ogg";
 snd4.appendChild(src4);
+snd4.volume = 0.7;
 
 var snd5  = new Audio();
 var src5  = document.createElement("source");
 src5.type = "audio/mpeg";
 src5.src  = "sounds/nono.opus";
 snd5.appendChild(src5);
+snd5.volume = 0.7;
 
 
 var snd6  = new Audio();
@@ -490,16 +501,16 @@ function startGame(){
 /* Keyboard */
 
 function keyDown(e) {
-    if (e.key === "Right" || e.key === "ArrowRight") {
+    if (e.key === "Right" || e.key === "ArrowRight" || e.key === "d") {
         car.dx = car.speed;
-    } else if (e.key === "Left" || e.key === "ArrowLeft") {
+    } else if (e.key === "Left" || e.key === "ArrowLeft" || e.key === "a") {
         car.dx = -car.speed;
-    } else if (e.key === "Up" || e.key === "ArrowUp") {
+    } else if (e.key === "Up" || e.key === "ArrowUp" || e.key === "w") {
         car.dy = -car.speed;
         if(!startedGame){
             startGame();
         }
-    } else if (e.key === "Down" || e.key === "ArrowDown") {
+    } else if (e.key === "Down" || e.key === "ArrowDown" || e.key === "s") {
         car.dy =car.speed;
     }else if (e.key === "Enter") {
         if(!startedGame){
@@ -517,43 +528,36 @@ function keyUp(e) {
       e.key === "Up" ||
       e.key === "ArrowUp" ||
       e.key === "Down" ||
-      e.key === "ArrowDown"
+      e.key === "ArrowDown" ||
+      e.key === "a" ||
+      e.key === "w" ||
+      e.key === "s" ||
+      e.key === "d"
     ) {
         car.dx = 0;
         //car.dy = 0;
     }
   }
 
-  function touchHandler(event)
-  {
-      var touches = event.changedTouches,
-          first = touches[0],
-          type = "";
-      switch(event.type)
-      {
-          case "touchstart": type = "mousedown"; break;
-          case "touchmove":  type = "mousemove"; break;        
-          case "touchend":   type = "mouseup";   break;
-          default:           return;
-      }
-  
-      // initMouseEvent(type, canBubble, cancelable, view, clickCount, 
-      //                screenX, screenY, clientX, clientY, ctrlKey, 
-      //                altKey, shiftKey, metaKey, button, relatedTarget);
-  
-      var simulatedEvent = document.createEvent("MouseEvent");
-      simulatedEvent.initMouseEvent(type, true, true, window, 1, 
-                                    first.screenX, first.screenY, 
-                                    first.clientX, first.clientY, false, 
-                                    false, false, false, 0/*left*/, null);
-  
-      first.target.dispatchEvent(simulatedEvent);
-      event.preventDefault();
-  }
+/* buttons for touch devices */
+function touch(s){
+    if (s === "right") {
+        
+        keyDown("Right");
+    }else if (s === "left") {
+        car.dx = -car.speed;
+    } else if (s === "up") {
+        car.dy = -car.speed;
+        if(!startedGame){
+            startGame();
+        }
+    }else if (s === "down") {
+        car.dy = car.speed;
+    } else{
+        car.dx = 0;
+        car.dy = 0;
+    }   
+}
 
-
-  document.addEventListener("touchstart", touchHandler, true);
-  document.addEventListener("touchend", touchHandler, true);
-  document.addEventListener("touchcancel", touchHandler, true);    
 document.addEventListener("keydown", keyDown);
 document.addEventListener("keyup", keyUp);
