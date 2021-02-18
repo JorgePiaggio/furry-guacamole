@@ -542,8 +542,7 @@ function keyUp(e) {
 /* buttons for touch devices */
 function touch(s){
     if (s === "right") {
-        
-        keyDown("Right");
+        car.dx = car.speed;
     }else if (s === "left") {
         car.dx = -car.speed;
     } else if (s === "up") {
